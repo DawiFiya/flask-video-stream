@@ -1,8 +1,9 @@
 from flask import Flask, Response
-
+from flask_cors import CORS  # Import CORS to enable cross-origin access
 import cv2
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 
 # 🔹 Replace with your ESP32-CAM Stream URL (Find the IP from Serial Monitor)
 ESP32_STREAM_URL = "http://172.20.10.2:81/stream"
@@ -27,7 +28,11 @@ def home():
 # 🔹 Route to access the video stream
 @app.route('/video_feed')
 def video_feed():
-    return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+    response = Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+    response.headers['Access-Control-Allow-Origin'] = '*'  # Allow all origins
+    response.headers['Access-Control-Allow-Methods'] = 'GET, OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+    return response
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)  # Run Flask app on port 5000
