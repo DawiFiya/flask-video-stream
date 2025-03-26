@@ -1,4 +1,5 @@
 from flask import Flask, Response
+
 import cv2
 
 app = Flask(__name__)
@@ -17,6 +18,11 @@ def generate_frames():
             frame = buffer.tobytes()
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # Send frame
+
+# 🔹 Basic route to check if the server is running
+@app.route('/')
+def home():
+    return "Flask Server is Running! Go to /video_feed to see the stream."
 
 # 🔹 Route to access the video stream
 @app.route('/video_feed')
